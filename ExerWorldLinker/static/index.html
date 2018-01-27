@@ -1,0 +1,239 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/csshake/1.5.2/csshake-crazy.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/csshake/1.5.2/csshake-slow.min.css">
+
+
+</head>
+
+<body>
+
+<style type="text/css">
+     body {
+        font-family: sans-serif;
+        font-size: 25px;
+     }
+     
+     h1 {
+        font-size: 50px;
+     }
+     
+      
+      #bgImage, #fgImage {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        height: auto;
+        width: auto;
+      }
+      
+      .center {
+        width: 100%;
+        margin-top: 5%;
+        text-align: center;
+      }
+      
+      html {
+        background-image: url(community-title-image.jpg);
+        -webkit-background-size: cover;
+          -moz-background-size: cover;
+          -o-background-size: cover;
+          background-size: cover;
+      }
+      
+      #buyStuff {
+        
+        z-index: 15;
+        width: 98%;
+        margin: auto;
+        transform: translate(-50%,0%);
+        position: fixed;
+        top: 75%;
+        left: 50%;
+        background-color: rgba(0,0,0,0.3);
+      }
+      
+      #iframeItch, #iframeSteam {
+        width: 100%;
+      }
+      
+      
+      #iframeItch {
+        width: 200px;
+        height: 200px;
+        float: left;
+      }
+      
+      #iframeSteam {
+        width: 100%;
+        
+        height: 200px;
+      
+      }
+      
+      #svg_wrapper {
+        /* display: none; */
+      }
+      
+      .clear {
+        clear: both;
+      }
+      
+       .button, .button:hover, .button:active {
+            background-color: #ff0000;
+            color: #ffffff;
+            text-shadow: 0 1px 0px #ff1a1a;
+       }
+       
+       .button {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            user-select: none;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            display: inline-block;
+            background: #FA5C5C;
+            color: white;
+            text-decoration: none;
+            padding: 0 10px;
+            font-size: 3vh;
+            text-shadow: 0 1px 0 #d64343;
+            cursor: pointer;
+            border-radius: 3px;
+            border: none;
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: inset 0 0 1px rgba(255,255,255,0.21);
+            text-align: center;
+            line-height: 33px;
+            font-weight: bold;
+            height: auto;
+            
+        }
+        
+        .button-wrap {
+        }
+        
+        .steam-button, .steam-button:hover, .steam-button:active {
+            background-color: #99b925;
+            color: #ffffff;
+            text-shadow: 0 1px 0 #395905;
+       }
+       
+       
+        .itch-button  {
+        }
+        
+        .steam-button {
+            background: #799905;
+            text-shadow: 0 1px 0 #395905;
+        }
+        
+        #or {
+            color: white;
+            font-size: 2vh;
+            vertical-align: text-bottom;
+        }
+        
+        
+        #buystuff div {
+            display: inline-block;
+            text-align: center;
+            padding: 1vh;
+            width: 43%;
+            margin: 5px;
+            height: 100%;
+        }
+        #buystuff div a{
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            z-index: 100;
+            border-radius: 2vh;
+        }
+        
+        html {
+            -webkit-filter: url(#glitch);
+            filter: url(#glitch);
+        }
+ </style>
+ 
+ <div class="center">
+    <h1>Exer.World Linker Web Root</h1>
+    
+    <h2>Linker</h2>
+    <a href="/linker/linker.html">/linker</a>
+    
+    <h2>API</h2>
+    <a href="/all">/all</a>
+    <br/>
+    <a href="/apps">/apps</a>
+    <br/>
+    <a href="/controllers">/controllers</a>
+    <br/>
+    <a href="/mappings">/mappings</a>
+    <br/>
+    <a href="/presets">/presets</a>
+    <br/>
+    <a href="/modifiers">/modifiers</a>
+    <br/>
+    
+    <h2>Generic Controller Interface</h2>
+    <a href="/genericController">/genericController</a>
+    <br/>
+    
+    
+ </div>
+ 
+ 
+ 
+ 
+ <!-- html demo -->
+    <!--
+    <iframe frameborder="0" src="https://itch.io/embed-upload/627638?color=c3c292" allowfullscreen="" width="960" height="620"></iframe>
+    --> 
+ 
+ <div id="svg_wrapper">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
+        <defs>
+          <filter id="glitch" x="0" y="0">
+            
+            <feColorMatrix in="SourceGraphic" mode="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"></feColorMatrix>
+                
+            <feOffset in="r" result="r" dx="-3.333333">
+              <animate attributeName="dx" attributeType="XML" 
+              values="0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; -1; 0; -1; -2; -4; 0 ;-3; 0"
+              dur="2s" repeatCount="indefinite"></animate>
+            </feOffset>
+            
+            
+            <feColorMatrix in="SourceGraphic" mode="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="g"></feColorMatrix>
+            
+            
+            <feOffset in="g" result="g" dx="-0.00222222" dy="1">
+              <animate attributeName="dx" attributeType="XML" 
+              values="0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; -3; 0; 8; 0 ;-1; 0"
+              dur="2s" repeatCount="indefinite"></animate>
+            </feOffset>
+            
+            
+            <feColorMatrix in="SourceGraphic" mode="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="b"></feColorMatrix>
+            
+            
+            <feOffset in="b" result="b" dx="0.904762" dy="2">
+              <animate attributeName="dx" attributeType="XML" 
+              values="0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 3; -1; 4; 0; 2; 0 ;18; 0"
+              dur="2s" repeatCount="indefinite"></animate>
+            </feOffset>
+            
+            --> 
+            
+            <feBlend in="r" in2="g" mode="screen" result="blend"></feBlend>
+            <feBlend in="blend" in2="b" mode="screen" result="blend"></feBlend>
+          </filter>
+        </defs>
+    </svg>
+</div>
+</body>
+
+</html>

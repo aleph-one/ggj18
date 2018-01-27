@@ -1,0 +1,46 @@
+{
+  "_id": "beats_multi_board"
+  , "name": "beats_multi_board"
+  , "description": "Beat's Multi BOARD! Homebrew Teensy/Arduino based midi controller by Beat Kunz"
+  , "startupCmd": "beats_multi_board.py"
+  , "outputs": [
+    {
+      "name": "pedal_0"
+    }
+    , {
+      "name": "pedal_1"
+    }
+    , {
+      "name": "pedal_2"
+    }
+    , {
+      "name": "pedal_3"
+    }
+    , {
+      "name": "pedal_4"
+    }
+    , {
+      "name": "pedal_5"
+    }
+    , {
+      "name": "pedal_6"
+    }
+    , {
+      "name": "pedal_7"
+    }
+    , {
+      "name": "pedal_8"
+    }
+    , {
+      "name": "pedal_9"
+    }
+    , {
+      "name": "pedal_10"
+    }
+    , {
+      "name": "pedal_11"
+    }
+    
+    ]
+
+}

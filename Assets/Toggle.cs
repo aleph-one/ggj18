@@ -19,18 +19,18 @@ public class Toggle : MonoBehaviour {
 	void Start () {
 		switches [0, 1, 0] = true;
 		switches [0, 2, 1] = true;
+
 		switches [1, 2, 0] = true;
 		switches [1, 2, 1] = true;
+
 		switches [2, 1, 0] = true;
-		switches [2, 3, 1] = true;
+		switches [2, 3, 0] = true;
 
-		switches [3, 2, 2] = true;
-		switches [3, 1, 2] = true;
-		switches [3, 3, 0] = true;
+		switches [3, 3, 1] = true;
+		switches [3, 2, 1] = true;
 
-		switches [4, 2, 1] = true;
-		switches [4, 1, 0] = true;
 		switches [4, 2, 2] = true;
+		switches [4, 3, 1] = true;
 
 		rooms [0, 0] = true;
 		rooms [3, 2] = true;

@@ -1,0 +1,51 @@
+{
+  "id": "steer_relay"
+  , "name": "steer_relay"
+  , "startupCmd": "steer_relay.py"
+  , "description": "Steer relay with 8 steerable electrical outlets"
+  
+  , "icon": "icon.png"
+  , "dir": ""
+  , "version": "0.0.1",
+
+  "inputs": [
+    {
+      "name": "relay1"
+    }
+    , {
+      "name": "relay2"
+    }
+    , 
+	{
+      "name": "relay3"
+    }
+	, 
+	{
+      "name": "relay4"
+    }
+	, 
+	{
+      "name": "relay5"
+    }
+	, 
+	{
+      "name": "relay6"
+    }
+	, 
+	{
+      "name": "relay7"
+    }
+	, 
+	{
+      "name": "relay8"
+    }
+  ],
+
+  "outputs": [
+    
+  ],
+
+  "settings": [
+    
+  ]
+}

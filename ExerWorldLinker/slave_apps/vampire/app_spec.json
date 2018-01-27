@@ -1,0 +1,55 @@
+{
+  "id": "vampire"
+  , "name": "vampire"
+  , "description": "vampire"
+  , "icon": "icon.png"
+  , "dir": ""
+  , "version": "0.0.1",
+
+  "inputs": [
+    {
+      "name": "window_row_1_col_1"
+    }
+    , {
+      "name": "window_row_1_col_2"
+    }
+	, {
+      "name": "window_row_1_col_3"
+    }
+	, {
+      "name": "window_row_1_col_4"
+    }
+    ,{
+      "name": "window_row_2_col_1"
+    }
+    , {
+      "name": "window_row_2_col_2"
+    }
+	, {
+      "name": "window_row_2_col_3"
+    }
+	, {
+      "name": "window_row_2_col_4"
+    }
+    ,{
+      "name": "window_row_3_col_1"
+    }
+    , {
+      "name": "window_row_3_col_2"
+    }
+	, {
+      "name": "window_row_3_col_3"
+    }
+	, {
+      "name": "window_row_3_col_4"
+    }
+  ],
+
+  "outputs": [
+    
+  ],
+
+  "settings": [
+    
+  ]
+}

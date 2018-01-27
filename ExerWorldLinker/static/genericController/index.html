@@ -1,0 +1,370 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Exer.World - Generic Interface</title>
+    <script src="jquery-3.2.1.min.js"></script>
+    <script src="NoSleep.min.js"></script>
+    <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font: 13px Helvetica, Arial; width: 100%, height: 101%; }
+	/*
+    form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+    form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+	*/
+	form { float: left; }
+    form button { width: 100%; background: rgb(130, 224, 255); padding: 10px; }
+
+    #messages { list-style-type: none; margin: 0; padding: 0; }
+    #messages li { padding: 5px 10px; }
+    #messages li:nth-child(odd) { background: #eee; }
+
+	.main {
+      border: 1px solid black;
+      box-shadow: 10px 10px 5px #888;
+      border-radius: 12px;
+      padding: 20px;
+      background-color: #ddd;
+      margin: 25px;
+      width: 60%;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .logo {
+      width:275px;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      padding: 15px;
+    }
+
+    .container {
+      -webkit-perspective: 300; perspective: 300;
+    }
+
+    #serverUrl {
+      position: fixed;
+      top: 0;
+      left 0;
+      transform: scale(3) translate(50%,50%);
+
+    }
+
+	#attack {
+		width: 100%;
+		height: 60%;
+		background-color: orange;
+		text-align: center;
+		font-size: 30px;
+	}
+    </style>
+  </head>
+  <body>
+	<div class="main">
+	  <form id="Bunsi" action="">	<button>Bunsi</button>	</form>
+	  <form  id="Pfeffer" action=""><button>Pfeffer</button></form>
+	  <form id="Seife" action="">	<button>Seife</button>	</form>
+	  <form id="Tacker" action="">	<button>Tacker</button> </form>
+	  <p style="clear:both"></p>
+      <h2>Device Orientation</h2>
+      <table>
+        <tr>
+          <td>Event Supported</td>
+          <td>Orientation:</td><td id="doEvent"></td>
+          <td>Motion:</td><td id="doEventMotion"></td><td id="dmEvent"></td>
+        </tr>
+        <tr>
+          <td>Tilt Left/Right [gamma]</td>
+          <td id="doTiltLR"></td>
+        </tr>
+        <tr>
+          <td>Tilt Front/Back [beta]</td>
+          <td id="doTiltFB"></td>
+        </tr>
+        <tr>
+          <td>Direction [alpha]</td>
+          <td id="doDirection"></td>
+        </tr>
+        <tr>
+      <td>acceleration</td>
+      <td id="moAccel"></td>
+    </tr>
+    <tr>
+      <td>accelerationIncludingGravity</td>
+      <td id="moAccelGrav"></td>
+    </tr>
+    <tr>
+      <td>rotationRate</td>
+      <td id="moRotation"></td>
+    </tr>
+    <tr>
+      <td>interval</td>
+      <td id="moInterval"></td>
+    </tr>
+		     <tr>
+          <td>attack?</td>
+          <td id="doAttack"></td>
+        </tr>
+        <tr>
+         <td>nosleep?</td>
+         <td id="nosleep_info">off</td>
+       </tr>
+      </table>
+	</div>
+
+	<div class="container" style="-webkit-perspective: 300; perspective: 300;">
+		<img src="html5_logo.png" id="imgLogo" class="logo" style="display: none;">
+	</div>
+	<div id="attack">
+		<br/>
+		<br/>
+		ATTACK!
+		<br/>
+		<br/>
+		<br/>
+	</div>
+
+  <div id="serverUrl">
+    <input value="http://localhost"></input>
+  </div>
+
+    <script>
+
+	  $('#Bunsi').submit(function(){chosenDevice="Bunsi"; 		console.log("chosenDevice is now: ", chosenDevice);	return false;});
+	  $('#Pfeffer').submit(function(){chosenDevice="Pfeffer"; 	console.log("chosenDevice is now: ", chosenDevice);	return false;});
+	  $('#Seife').submit(function(){chosenDevice="Seife"; 		console.log("chosenDevice is now: ", chosenDevice);	return false;});
+	  $('#Tacker').submit(function(){chosenDevice="Tacker"; 	console.log("chosenDevice is now: ", chosenDevice);	return false;});
+
+
+    </script>
+	<script type="text/javascript">
+	chosenDevice = "NONE";
+
+    init();
+    var count = 0;
+
+	chosenDevice = "None";
+	attack = "false";
+  attackVal = 0;
+	send_count = 0;
+  tiltLR = 0;
+
+  // beta is the front-to-back tilt in degrees, where front is positive
+  tiltFB = 0;
+
+  // alpha is the compass direction the device is facing in degrees
+  dir = 0;
+
+  // acceleration data
+  accel_x = 0;
+  accel_y = 0;
+  accel_z = 0;
+  accel_with_gravity_x = 0;
+  accel_with_gravity_y = 0;
+  accel_with_gravity_z = 0;
+  rotation_rate_alpha = 0;
+  rotation_rate_beta = 0;
+  rotation_rate_gamma = 0;
+
+
+    function init() {
+      if (window.DeviceOrientationEvent) {
+        document.getElementById("doEvent").innerHTML = "DeviceOrientation";
+        // Listen for the deviceorientation event and handle the raw data
+        window.addEventListener('deviceorientation', function(eventData) {
+          // gamma is the left-to-right tilt in degrees, where right is positive
+          tiltLR = (eventData.gamma+180.0)/360.0;
+
+          // beta is the front-to-back tilt in degrees, where front is positive
+          tiltFB = (eventData.beta+180.0)/360.0;;
+
+          // alpha is the compass direction the device is facing in degrees
+          dir = (eventData.alpha+180.0)/360.0;
+
+          // call our orientation event handler
+          deviceOrientationHandler(tiltLR, tiltFB, dir);
+          }, false);
+      } else {
+        document.getElementById("doEvent").innerHTML = "DeviceOrientationEvent not supported on your device or browser.  Sorry."
+      }
+
+      if (window.DeviceMotionEvent) {
+        document.getElementById("doEventMotion").innerHTML = "DeviceOrientation";
+        // Listen for the deviceorientation event and handle the raw data
+        window.addEventListener('devicemotion', deviceMotionHandler, false);
+      } else {
+        document.getElementById("doEvent").innerHTML = "DeviceMotionEvent not supported on your device or browser.  Sorry."
+      }
+    }
+
+    function deviceOrientationHandler(tiltLR, tiltFB, dir) {
+      //*
+      document.getElementById("doTiltLR").innerHTML = tiltLR;
+      document.getElementById("doTiltFB").innerHTML = tiltFB;
+      document.getElementById("doDirection").innerHTML = dir;
+
+      // Apply the transform to the image
+      var logo = document.getElementById("imgLogo");
+      logo.style.webkitTransform = "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+      logo.style.MozTransform = "rotate("+ tiltLR +"deg)";
+      logo.style.transform = "rotate("+ tiltLR +"deg) rotate3d(1,0,0, "+ (tiltFB*-1)+"deg)";
+      //*/
+
+    var tiltLRStr = ""+tiltLR;
+    var tiltFBStr = ""+tiltFB;
+    var dirStr = ""+dir;
+
+
+    //var send_string = "" + chosenDevice + " " + Math.round(tiltLR) + " " + Math.round(tiltFB) + " " + Math.round(dir) + " " + attack + " " + count;
+	  // socket.emit('chat message', send_string);
+
+  }
+  function postToExerWorld(name, value) {
+    var exerWorldServerUrl = $("#serverUrl").children().val();
+
+    // var exerWorldServerUrl = "http://192.168.1.2:5000";
+    // var exerWorldServerUrl = "";
+    var baseUrl = ""+exerWorldServerUrl+"/controllers/genericController/";
+    // var baseUrl = http://localhost:5000/controllers/genericController/
+    // console.log("send post to base url " + baseUrl );
+    $.post( baseUrl + ""+name+"/"+value);
+    send_count += 1;
+  }
+  function deviceMotionHandler(eventData) {
+    console.log("eventData", eventData)
+    var info, xyz = "[X, Y, Z]";
+
+    // Grab the acceleration from the results
+    var acceleration = eventData.acceleration;
+    accel_x = acceleration.x;
+    accel_y = acceleration.y;
+    accel_z = acceleration.z;
+    //*
+    info = xyz.replace("X", accel_x);
+    info = info.replace("Y", accel_y);
+    info = info.replace("Z", accel_z);
+    document.getElementById("moAccel").innerHTML = info;
+    // */
+    // Grab the acceleration including gravity from the results
+    acceleration = eventData.accelerationIncludingGravity;
+    accel_with_gravity_x = acceleration.x;
+    accel_with_gravity_y = acceleration.y;
+    accel_with_gravity_z = acceleration.z;
+    //*
+    info = xyz.replace("X", accel_with_gravity_x);
+    info = info.replace("Y", accel_with_gravity_y);
+    info = info.replace("Z", accel_with_gravity_z);
+    document.getElementById("moAccelGrav").innerHTML = info;
+    //*/
+
+    // Grab the rotation rate from the results
+    var rotation = eventData.rotationRate;
+    rotation_rate_alpha = rotation.alpha;
+    rotation_rate_beta = rotation.beta;
+    rotation_rate_gamma = rotation.gamma;
+    //*
+    info = xyz.replace("X", rotation_rate_alpha);
+    info = info.replace("Y", rotation_rate_beta);
+    info = info.replace("Z", rotation_rate_gamma);
+    document.getElementById("moRotation").innerHTML = info;
+
+    info = eventData.interval;
+    document.getElementById("moInterval").innerHTML = info;
+    //*/
+
+    if (accel_x == null) {
+      accel_x = accel_with_gravity_x;
+      accel_y = accel_with_gravity_y;
+      accel_z = accel_with_gravity_z;
+
+    }
+  }
+
+  $.ajaxSetup({
+    type: 'POST',
+    timeout: 100
+  });
+  
+  setInterval(function() {
+
+    postToExerWorld(["value1","value2","value3","value4","value5","value6","value7","value8","value9","value10"],
+                    [ tiltLR,tiltFB,dir,
+                      normAccel(accel_x),normAccel(accel_y),normAccel(accel_z),
+                      normAccel(rotation_rate_alpha),normAccel(rotation_rate_beta),normAccel(rotation_rate_gamma),
+                      attackVal]);
+
+  },60);
+
+
+  function normAccel(val) {
+    var range = 10.0;
+    var normedVal = (val + range) / (range*2.0);
+    if (normedVal < 0) {
+      normedVal = 0;
+    }
+    if (normedVal > 1) {
+      normedVal = 1;
+    }
+    return normedVal;
+  }
+
+
+
+  function attackOn() {
+    attack = "true";
+    attackVal = 1;
+    // postToExerWorld("value10",1);
+	  document.getElementById("doAttack").innerHTML = attack;
+  }
+  function attackOff() {
+    attack = "false";
+    attackVal = 0;
+    // postToExerWorld("value10",0);
+	  document.getElementById("doAttack").innerHTML = attack;
+  }
+	document.body.onmouseup = function() {
+	  attackOff()
+	}
+	document.addEventListener('touchmove', function(e) {
+		attackOn();
+	}, false);
+	document.addEventListener('touchend', function(e) {
+		attackOff();
+	}, false);
+	document.addEventListener('touchcancel', function(e) {
+		attackOff();
+	}, false);
+
+  var url = window.location.href;
+  var arr = url.split("/");
+  var result = arr[0] + "//" + arr[2]; console.log(result)
+  $("#serverUrl").children().val(result);
+
+
+  </script>
+  <script>
+	
+	var noSleep = new NoSleep();
+
+	function enableNoSleep() {
+	  noSleep.enable();
+	  document.removeEventListener('touchstart', enableNoSleep, false);
+	  document.removeEventListener('mousedown', enableNoSleep, false);
+	  console.log("Enabled nosleep");
+	  $("#nosleep_info").text("ON!");
+	  $("#clickOverlay").remove();
+	}
+
+	// Enable wake lock.
+	// NOTE: must be wrapped in a user input event handler e.g. a mouse or touch handler)
+	document.addEventListener('touchstart', enableNoSleep, false);
+	document.addEventListener('mousedown', enableNoSleep, false);
+		
+  </script>
+
+  
+  <div id="clickOverlay" style='z-index: 100;background-color: rgba(255,255,255,0.9); width: 100%; height: 100%; position: fixed; top: 0px; left: 0px; font-size: 100px; padding: 100px;'>
+	Click or touch once to active no sleep :)
+  </div>
+  </body>
+</html>
