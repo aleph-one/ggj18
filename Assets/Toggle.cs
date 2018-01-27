@@ -44,6 +44,7 @@ public class Toggle : MonoBehaviour {
 				path = hasWon ();
 			}
 		} else {
+			this.vampire.GetComponent<Animator> ().SetBool ("walk", true);
 			float speed = 2 * Time.deltaTime;
 			this.vampire.transform.position = Vector3.MoveTowards (this.vampire.transform.position, this.path [0], speed);
 			if (this.vampire.transform.position.Equals (this.path [0]) && this.path.Count > 1) {
