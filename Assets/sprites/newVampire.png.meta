@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 17b876f40bed8974b950b81b9ba3b2ee
-timeCreated: 1517013918
-licenseType: Free
+timeCreated: 1517045747
+licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
     21300000: newVampire_0
@@ -106,9 +106,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 128
-        height: 128
+        y: 8
+        width: 120
+        height: 120
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -119,10 +119,10 @@ TextureImporter:
       name: newVampire_1
       rect:
         serializedVersion: 2
-        x: 128
-        y: 0
-        width: 128
-        height: 128
+        x: 120
+        y: 8
+        width: 120
+        height: 120
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
