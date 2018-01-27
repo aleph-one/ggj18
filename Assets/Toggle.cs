@@ -36,6 +36,14 @@ public class Toggle : MonoBehaviour {
 		//SceneManager.LoadScene (0);
 	}
 
+	private float getSpecialToggle (int toggle) {
+		int row = toggle / 4 + 1;
+		int col = toggle % 4 + 1;
+		string s = "window_row_" + row + "_col_" + col;
+		float f = ControlInput.GetCurrentValue (s);
+		return f;
+	}
+
 	private void init() {
 		this.switches = new bool[numToggles, xRooms, yRooms];
 		this.rooms = new bool[xRooms, yRooms];
@@ -67,10 +75,19 @@ public class Toggle : MonoBehaviour {
 			switches [1, 3, 0] = true;
 			switches [1, 3, 1] = true;
 		}
+		for (int toggle = 0; toggle < numToggles; toggle++) {
+			float f = getSpecialToggle (toggle);
+			if (f == 0.0) {
+				this.toggles [toggle] = false;
+			} else if (f > 0.6) {
+				this.toggles [toggle] = true;
+			} else if (f < 0.4) {
+				this.toggles [toggle] = false;
+			}
+		}
 		this.path = null;
 		this.levelFinished = false;
 		this.score.SetActive (false);
-		this.levelsCompleted = 0;
 	}
 	private void randomSwitch(int toggle) {
 		int x = Random.Range (0, xRooms);
@@ -84,10 +101,19 @@ public class Toggle : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Time.realtimeSinceStartup - this.startTime > this.playTime) {//GAME OVER
-			this.score.GetComponent<Text> ().text = this.levelsCompleted + " levels finished in " + this.playTime + " seconds";
+			string msg = this.levelsCompleted + " levels finished in " + this.playTime + " seconds";
+			if (this.levelsCompleted < 3) {
+				msg += "\nThats pretty BAD!";
+			} else if (this.levelsCompleted < 6) {
+				msg += "\nThats quite OK!";
+			} else {
+				msg += "\nThats FANTASTIC!";
+			}
+			this.score.GetComponent<Text> ().text = msg;
 			this.score.SetActive (true);
 			if (Input.anyKey) {
 				init ();
+				this.levelsCompleted = 0;
 				this.startTime = Time.realtimeSinceStartup;
 			}
 		} else if (path == null) {// no path found yet
@@ -129,14 +155,11 @@ public class Toggle : MonoBehaviour {
 		bool updated = false;
 		for (int toggle = 0; toggle < numToggles; toggle++) {
 			bool b = Input.GetButtonDown ("Toggle" + toggle);//F1-F12
-			if (!b) {//special controller
-				int row = toggle / 4 + 1;
-				int col = toggle % 4 + 1;
-				string s = "window_row_" + row + "_col_" + col;
-				float f = ControlInput.GetCurrentValue (s);
+			if (!b) {//our special controller
+				float f = getSpecialToggle (toggle);
 				if (f == 0.0) {
 					this.toggles [toggle] = false;
-				} else if (f > 0.8) {
+				} else if (f > 0.6) {
 					b = this.toggles [toggle] ^ true;
 					this.toggles [toggle] = true;
 				} else if (f < 0.4) {
