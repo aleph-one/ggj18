@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: fa6169bd64c5d6d4fbc879238e61949d
-timeCreated: 1517064650
+timeCreated: 1517065936
 licenseType: Pro
 TextureImporter:
   fileIDToRecycleName:
@@ -126,9 +126,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 354
-        width: 125
-        height: 158
+        y: 339
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -139,10 +139,10 @@ TextureImporter:
       name: ladyIdle_1
       rect:
         serializedVersion: 2
-        x: 125
-        y: 354
-        width: 125
-        height: 158
+        x: 120
+        y: 339
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -153,10 +153,10 @@ TextureImporter:
       name: ladyIdle_2
       rect:
         serializedVersion: 2
-        x: 250
-        y: 354
-        width: 125
-        height: 158
+        x: 240
+        y: 339
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -167,10 +167,10 @@ TextureImporter:
       name: ladyIdle_3
       rect:
         serializedVersion: 2
-        x: 375
-        y: 354
-        width: 125
-        height: 158
+        x: 360
+        y: 339
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -182,9 +182,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 196
-        width: 125
-        height: 158
+        y: 187
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -195,10 +195,10 @@ TextureImporter:
       name: ladyIdle_5
       rect:
         serializedVersion: 2
-        x: 125
-        y: 196
-        width: 125
-        height: 158
+        x: 120
+        y: 187
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -209,10 +209,10 @@ TextureImporter:
       name: ladyIdle_6
       rect:
         serializedVersion: 2
-        x: 250
-        y: 196
-        width: 125
-        height: 158
+        x: 240
+        y: 187
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -223,10 +223,10 @@ TextureImporter:
       name: ladyIdle_7
       rect:
         serializedVersion: 2
-        x: 375
-        y: 196
-        width: 125
-        height: 158
+        x: 360
+        y: 187
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -238,9 +238,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 38
-        width: 125
-        height: 158
+        y: 35
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -251,10 +251,10 @@ TextureImporter:
       name: ladyIdle_9
       rect:
         serializedVersion: 2
-        x: 125
-        y: 38
-        width: 125
-        height: 158
+        x: 120
+        y: 35
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -265,10 +265,10 @@ TextureImporter:
       name: ladyIdle_10
       rect:
         serializedVersion: 2
-        x: 250
-        y: 38
-        width: 125
-        height: 158
+        x: 240
+        y: 35
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,10 +279,10 @@ TextureImporter:
       name: ladyIdle_11
       rect:
         serializedVersion: 2
-        x: 375
-        y: 38
-        width: 125
-        height: 158
+        x: 360
+        y: 35
+        width: 120
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
