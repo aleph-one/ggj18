@@ -17,6 +17,26 @@ public class Toggle : MonoBehaviour {
 	public bool isRandom = false;
 	// Use this for initialization
 	void Start () {
+		init ();
+	}
+
+	IEnumerator startGame() {
+		yield return new WaitForSeconds (4);
+		init ();
+	}
+
+	private void init() {
+		switches = new bool[numToggles, xRooms, yRooms];
+		rooms = new bool[xRooms, yRooms];
+		rooms [0, 0] = true;
+		rooms [3, 2] = true;
+
+		path = null;
+		toggles = new bool[numToggles];
+		foreach (GameObject roomSprite in roomSprites) {
+			roomSprite.GetComponent<SpriteRenderer> ().color = Color.white;
+		}
+		this.vampire.transform.position = new Vector3 (-5.25f, 1.0f, 0.0f);
 		if (isRandom) {
 			for (int i = 0; i < numToggles; i++) {
 				randomSwitch (i);
@@ -24,10 +44,10 @@ public class Toggle : MonoBehaviour {
 			}
 		} else {
 			switches [0, 1, 0] = true;
-			switches [0, 2, 1] = true;
+			switches [0, 2, 0] = true;
 
-			switches [1, 2, 0] = true;
-			switches [1, 2, 1] = true;
+			switches [1, 3, 0] = true;
+			switches [1, 3, 1] = true;
 
 			switches [2, 1, 0] = true;
 			switches [2, 3, 0] = true;
@@ -47,13 +67,10 @@ public class Toggle : MonoBehaviour {
 			switches [7, 1, 2] = true;
 			switches [7, 3, 0] = true;
 
-			switches [8, 1, 3] = true;
+			switches [8, 1, 1] = true;
 			switches [8, 2, 1] = true;
 		}
-		rooms [0, 0] = true;
-		rooms [3, 2] = true;
 	}
-
 	void randomSwitch(int toggle) {
 		int x = Random.Range (0, xRooms);
 		int y = Random.Range (0, yRooms);
@@ -64,9 +81,7 @@ public class Toggle : MonoBehaviour {
 	}
 	// Update is called once per frame
 	void Update () {
-		if (Time.realtimeSinceStartup < 2)
-			return;
-		if (path == null) {
+		if (path == null) {// no path found yet
 			bool updated = checkToggles ();
 			if (updated) {
 				path = check (0, 0, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
@@ -75,7 +90,8 @@ public class Toggle : MonoBehaviour {
 			//reached GOAL
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
 			this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
-		} else {
+			StartCoroutine (startGame());
+		} else {//walking towards goal
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", true);
 			float speed = 3 * Time.deltaTime;
 			Vector3 nextPos = getAnimationPos (this.path[0]);
@@ -100,21 +116,20 @@ public class Toggle : MonoBehaviour {
 		bool updated = false;
 		for (int toggle = 0; toggle < numToggles; toggle++) {
 			bool b = Input.GetButtonDown ("Toggle" + toggle);
-			int row = toggle / 4 + 1;
-			int col = toggle % 4 + 1;
-			string s = "window_row_" + row + "_col_" + col;
-			float f = ControlInput.GetCurrentValue (s);
-			//bool b = f > 0.5;
-			if (f == 0.0) {
-				this.toggles [toggle] = false;
-			} else if (f > 0.8) {
-				//b = true;
-				b = this.toggles [toggle] ^ true;
-				this.toggles [toggle] = true;
-			} else if (f < 0.4) {
-				//b = true;
-				b = this.toggles [toggle] ^ false;
-				this.toggles [toggle] = false;
+			if (!b) {
+				int row = toggle / 4 + 1;
+				int col = toggle % 4 + 1;
+				string s = "window_row_" + row + "_col_" + col;
+				float f = ControlInput.GetCurrentValue (s);
+				if (f == 0.0) {
+					this.toggles [toggle] = false;
+				} else if (f > 0.8) {
+					b = this.toggles [toggle] ^ true;
+					this.toggles [toggle] = true;
+				} else if (f < 0.4) {
+					b = this.toggles [toggle] ^ false;
+					this.toggles [toggle] = false;
+				}
 			}
 			if (b) {
 				//print ("Toggle: " + toggle);
