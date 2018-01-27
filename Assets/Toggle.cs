@@ -14,30 +14,54 @@ public class Toggle : MonoBehaviour {
 	public GameObject[] roomSprites;
 	public Color roomDark;
 	public GameObject vampire;
-
+	public bool isRandom = false;
 	// Use this for initialization
 	void Start () {
-		switches [0, 1, 0] = true;
-		switches [0, 2, 1] = true;
+		if (isRandom) {
+			for (int i = 0; i < numToggles; i++) {
+				randomSwitch (i);
+				randomSwitch (i);
+			}
+		} else {
+			switches [0, 1, 0] = true;
+			switches [0, 2, 1] = true;
 
-		switches [1, 2, 0] = true;
-		switches [1, 2, 1] = true;
+			switches [1, 2, 0] = true;
+			switches [1, 2, 1] = true;
 
-		switches [2, 1, 0] = true;
-		switches [2, 3, 0] = true;
+			switches [2, 1, 0] = true;
+			switches [2, 3, 0] = true;
 
-		switches [3, 3, 1] = true;
-		switches [3, 2, 1] = true;
+			switches [3, 3, 1] = true;
+			switches [3, 2, 1] = true;
 
-		switches [4, 2, 2] = true;
-		switches [4, 3, 1] = true;
+			switches [4, 2, 2] = true;
+			switches [4, 3, 0] = true;
 
+			switches [5, 0, 2] = true;
+			switches [5, 2, 1] = true;
+
+			switches [6, 2, 0] = true;
+			switches [6, 1, 2] = true;
+
+			switches [7, 1, 2] = true;
+			switches [7, 3, 0] = true;
+
+			switches [8, 1, 3] = true;
+			switches [8, 2, 1] = true;
+		}
 		rooms [0, 0] = true;
 		rooms [3, 2] = true;
-
-
 	}
 
+	void randomSwitch(int toggle) {
+		int x = Random.Range (0, xRooms);
+		int y = Random.Range (0, yRooms);
+		if ((x == 0 && y == 0) || (x == 3 && y == 2))
+			randomSwitch (toggle);
+		else
+			switches [toggle, x, y] = true;
+	}
 	// Update is called once per frame
 	void Update () {
 		if (Time.realtimeSinceStartup < 2)
@@ -83,16 +107,15 @@ public class Toggle : MonoBehaviour {
 			//bool b = f > 0.5;
 			if (f == 0.0) {
 				this.toggles [toggle] = false;
-			} else if (f > 0.7) {
+			} else if (f > 0.8) {
 				//b = true;
 				b = this.toggles [toggle] ^ true;
 				this.toggles [toggle] = true;
-			} else if (f < 0.3) {
+			} else if (f < 0.4) {
 				//b = true;
 				b = this.toggles [toggle] ^ false;
 				this.toggles [toggle] = false;
 			}
-			//this.toggles [toggle] = b;
 			if (b) {
 				//print ("Toggle: " + toggle);
 				updated = true;
@@ -119,7 +142,7 @@ public class Toggle : MonoBehaviour {
 	}
 
 	Vector2Int[] getNeighbors(int x, int y) {
-		return new Vector2Int[] {new Vector2Int(x - 1, y), new Vector2Int(x, y - 1), new Vector2Int(x + 1, y), new Vector2Int(x, y + 1)};
+		return new Vector2Int[] {new Vector2Int(x + 1, y), new Vector2Int(x, y + 1), new Vector2Int(x - 1, y), new Vector2Int(x, y - 1)};
 	}
 	List<Vector2Int> check(int xRoom, int yRoom, bool[,] visited, List<Vector2Int> path) {
 		visited [xRoom, yRoom] = true;

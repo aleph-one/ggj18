@@ -104,3 +104,42 @@
 2018-01-27,13:15:33.763 rtmidi.midiutil DEBUG    Creating MidiIn object.
 2018-01-27,13:15:33.778 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
 2018-01-27,13:15:34.625 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,13:48:44.763 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,13:48:44.779 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,13:48:45.634 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,13:49:48.973 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,13:49:48.990 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,13:49:49.838 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,13:52:22.897 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,13:52:22.914 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,13:52:23.769 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,13:54:17.624 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,13:54:17.640 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,13:54:18.480 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,13:56:02.825 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,13:56:02.838 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,13:56:03.701 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,13:58:12.928 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,13:58:12.943 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,13:58:13.793 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,13:59:26.592 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,13:59:26.605 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,13:59:27.460 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,14:02:33.872 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,14:02:33.887 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,14:02:34.743 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,14:17:33.668 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,14:17:33.683 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,14:17:34.526 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,14:22:25.003 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,14:22:25.016 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,14:22:25.868 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,14:25:55.415 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,14:25:55.430 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,14:25:56.279 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,14:57:45.775 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,14:57:45.790 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,14:57:46.621 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+2018-01-27,15:01:10.303 rtmidi.midiutil DEBUG    Creating MidiIn object.
+2018-01-27,15:01:10.318 rtmidi.midiutil INFO     Opening MIDI input port #0 (Teensy MIDI 0).
+2018-01-27,15:01:11.187 werkzeug     INFO      * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
