@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using ExerWorld;
 
 public class Toggle : MonoBehaviour {
@@ -11,32 +13,48 @@ public class Toggle : MonoBehaviour {
 	private bool[,] rooms = new bool[xRooms, yRooms];
 	private List<Vector2Int> path;
 	private bool[] toggles = new bool[numToggles];
+	private int levelsCompleted = 0;
+	private bool levelFinished = false;
+	private float startTime;
+
 	public GameObject[] roomSprites;
 	public Color roomDark;
 	public GameObject vampire;
+	public GameObject lady;
+	public GameObject score;
+	public int playTime = 20;
 	public bool isRandom = false;
+
 	// Use this for initialization
 	void Start () {
 		init ();
 	}
 
 	IEnumerator startGame() {
-		yield return new WaitForSeconds (4);
+		yield return new WaitForSeconds (1);
 		init ();
+		//SceneManager.LoadScene (0);
 	}
 
 	private void init() {
-		switches = new bool[numToggles, xRooms, yRooms];
-		rooms = new bool[xRooms, yRooms];
-		rooms [0, 0] = true;
-		rooms [3, 2] = true;
+		this.switches = new bool[numToggles, xRooms, yRooms];
+		this.rooms = new bool[xRooms, yRooms];
+		this.rooms [0, 0] = true;
+		this.rooms [3, 2] = true;
 
-		path = null;
-		toggles = new bool[numToggles];
+		this.toggles = new bool[numToggles];
 		foreach (GameObject roomSprite in roomSprites) {
 			roomSprite.GetComponent<SpriteRenderer> ().color = Color.white;
 		}
-		this.vampire.transform.position = new Vector3 (-5.25f, 1.0f, 0.0f);
+
+		GameObject go = this.lady;
+		this.lady = this.vampire;
+		this.vampire = go;
+		this.vampire.transform.position = getAnimationPos (new Vector2Int(0, 0));
+		this.lady.transform.position = getAnimationPos (new Vector2Int(3, 2));
+		this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
+		this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
+		this.lady.GetComponent<Animator> ().SetBool ("vampire", false);
 		if (isRandom) {
 			for (int i = 0; i < numToggles; i++) {
 				randomSwitch (i);
@@ -48,30 +66,13 @@ public class Toggle : MonoBehaviour {
 
 			switches [1, 3, 0] = true;
 			switches [1, 3, 1] = true;
-
-			switches [2, 1, 0] = true;
-			switches [2, 3, 0] = true;
-
-			switches [3, 3, 1] = true;
-			switches [3, 2, 1] = true;
-
-			switches [4, 2, 2] = true;
-			switches [4, 3, 0] = true;
-
-			switches [5, 0, 2] = true;
-			switches [5, 2, 1] = true;
-
-			switches [6, 2, 0] = true;
-			switches [6, 1, 2] = true;
-
-			switches [7, 1, 2] = true;
-			switches [7, 3, 0] = true;
-
-			switches [8, 1, 1] = true;
-			switches [8, 2, 1] = true;
 		}
+		this.path = null;
+		this.levelFinished = false;
+		this.score.SetActive (false);
+		this.levelsCompleted = 0;
 	}
-	void randomSwitch(int toggle) {
+	private void randomSwitch(int toggle) {
 		int x = Random.Range (0, xRooms);
 		int y = Random.Range (0, yRooms);
 		if ((x == 0 && y == 0) || (x == 3 && y == 2))
@@ -79,21 +80,33 @@ public class Toggle : MonoBehaviour {
 		else
 			switches [toggle, x, y] = true;
 	}
+
 	// Update is called once per frame
 	void Update () {
-		if (path == null) {// no path found yet
+		if (Time.realtimeSinceStartup - this.startTime > this.playTime) {//GAME OVER
+			this.score.GetComponent<Text> ().text = this.levelsCompleted + " levels finished in " + this.playTime + " seconds";
+			this.score.SetActive (true);
+			if (Input.anyKey) {
+				init ();
+				this.startTime = Time.realtimeSinceStartup;
+			}
+		} else if (path == null) {// no path found yet
 			bool updated = checkToggles ();
 			if (updated) {
-				path = check (0, 0, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
+				path = checkPath (0, 0, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
 			}
-		} else if (path.Count == 0) {
-			//reached GOAL
+		} else if (path.Count == 0) {//reached GOAL
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
 			this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
-			StartCoroutine (startGame());
+			this.lady.GetComponent<Animator> ().SetBool ("vampire", true);
+			if (! this.levelFinished) {
+				this.levelsCompleted++;
+				StartCoroutine (startGame());
+				this.levelFinished = true;
+			}
 		} else {//walking towards goal
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", true);
-			float speed = 3 * Time.deltaTime;
+			float speed = 6 * Time.deltaTime;
 			Vector3 nextPos = getAnimationPos (this.path[0]);
 			this.vampire.transform.position = Vector3.MoveTowards (this.vampire.transform.position, nextPos, speed);
 			if (this.vampire.transform.position.Equals (nextPos)) {
@@ -115,8 +128,8 @@ public class Toggle : MonoBehaviour {
 	bool checkToggles () {
 		bool updated = false;
 		for (int toggle = 0; toggle < numToggles; toggle++) {
-			bool b = Input.GetButtonDown ("Toggle" + toggle);
-			if (!b) {
+			bool b = Input.GetButtonDown ("Toggle" + toggle);//F1-F12
+			if (!b) {//special controller
 				int row = toggle / 4 + 1;
 				int col = toggle % 4 + 1;
 				string s = "window_row_" + row + "_col_" + col;
@@ -132,7 +145,6 @@ public class Toggle : MonoBehaviour {
 				}
 			}
 			if (b) {
-				//print ("Toggle: " + toggle);
 				updated = true;
 				for (int xRoom = 0; xRoom < Toggle.xRooms; xRoom++) {
 					for (int yRoom = 0; yRoom < Toggle.yRooms; yRoom++) {
@@ -143,6 +155,7 @@ public class Toggle : MonoBehaviour {
 				}
 			}
 		}
+		// update room sprites
 		for (int xRoom = 0; xRoom < Toggle.xRooms; xRoom++) {
 			for (int yRoom = 0; yRoom < Toggle.yRooms; yRoom++) {
 				if (rooms [xRoom, yRoom]) {
@@ -159,7 +172,7 @@ public class Toggle : MonoBehaviour {
 	Vector2Int[] getNeighbors(int x, int y) {
 		return new Vector2Int[] {new Vector2Int(x + 1, y), new Vector2Int(x, y + 1), new Vector2Int(x - 1, y), new Vector2Int(x, y - 1)};
 	}
-	List<Vector2Int> check(int xRoom, int yRoom, bool[,] visited, List<Vector2Int> path) {
+	List<Vector2Int> checkPath(int xRoom, int yRoom, bool[,] visited, List<Vector2Int> path) {
 		visited [xRoom, yRoom] = true;
 		if (xRoom == 3 && yRoom == 2) {//GOAL
 			return path;
@@ -172,7 +185,7 @@ public class Toggle : MonoBehaviour {
 			if (n [i].x >= 0 && n [i].x < Toggle.xRooms && n[i].y >= 0 && n[i].y < Toggle.yRooms && !visited [n [i].x, n[i].y]) {
 				List<Vector2Int> np = new List<Vector2Int> (path.ToArray());
 				np.Add (new Vector2Int(n[i].x, n[i].y));
-				List<Vector2Int> p2 = check (n [i].x, n [i].y, visited, np);
+				List<Vector2Int> p2 = checkPath (n [i].x, n [i].y, visited, np);
 				if (p2 != null) {
 					return p2;
 				}
