@@ -774,6 +774,7 @@ MonoBehaviour:
   - {fileID: 713509174}
   roomDark: {r: 0.1185121, g: 0.11764705, b: 0.11764705, a: 1}
   vampire: {fileID: 1199189207}
+  isRandom: 0
 --- !u!1 &713509174
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,7 +921,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.25, y: 1.58}
+  m_Size: {x: 1.2, y: 1.52}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
