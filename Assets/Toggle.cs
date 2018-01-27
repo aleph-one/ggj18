@@ -64,10 +64,26 @@ public class Toggle : MonoBehaviour {
 		this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
 		this.lady.GetComponent<Animator> ().SetBool ("vampire", false);
 		if (isRandom) {
-			for (int i = 0; i < numToggles; i++) {
-				randomSwitch (i);
-				randomSwitch (i);
-			}
+			HashSet<Vector2Int> duplicates = new HashSet<Vector2Int> ();
+			int tries = 0;
+			do {
+				duplicates.Clear();
+				switches = new bool[numToggles, xRooms, yRooms];
+				for (int i = 0; i < numToggles; i++) {
+					Vector2Int r1 = randomSwitch (i);
+					duplicates.Add (r1);
+					Vector2Int r2 = randomSwitch (i);
+					while (r2.Equals(r1)) {
+						r2 = randomSwitch (i);
+					}
+					duplicates.Add (r2);
+					//randomSwitch (i);
+					//randomSwitch (i);
+				}
+				tries++;
+				//print("Duplicates: " + duplicates.Count);
+			} while(duplicates.Count > (numToggles * 2) / 4);
+			print ("Tries: " + tries);
 		} else {
 			switches [0, 1, 0] = true;
 			switches [0, 2, 0] = true;
@@ -87,15 +103,18 @@ public class Toggle : MonoBehaviour {
 		}
 		this.path = null;
 		this.levelFinished = false;
-		this.score.SetActive (false);
+		//this.score.SetActive (false);
+		this.score.GetComponent<Text>().text = "Level " + (this.levelsCompleted + 1);
 	}
-	private void randomSwitch(int toggle) {
-		int x = Random.Range (0, xRooms);
-		int y = Random.Range (0, yRooms);
-		if ((x == 0 && y == 0) || (x == 3 && y == 2))
-			randomSwitch (toggle);
+	private Vector2Int randomSwitch(int toggle) {
+		Vector2Int result = new Vector2Int ();
+		result.x = Random.Range (0, xRooms);
+		result.y = Random.Range (0, yRooms);
+		if ((result.x == 0 && result.y == 0) || (result.x == 3 && result.y == 2))
+			return randomSwitch (toggle);
 		else
-			switches [toggle, x, y] = true;
+			switches [toggle, result.x, result.y] = true;
+		return result;
 	}
 
 	// Update is called once per frame
@@ -114,6 +133,7 @@ public class Toggle : MonoBehaviour {
 			if (Input.anyKey) {
 				init ();
 				this.levelsCompleted = 0;
+				this.score.GetComponent<Text>().text = "Level " + (this.levelsCompleted + 1);
 				this.startTime = Time.realtimeSinceStartup;
 			}
 		} else if (path == null) {// no path found yet
@@ -122,6 +142,8 @@ public class Toggle : MonoBehaviour {
 				path = checkPath (0, 0, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
 			}
 		} else if (path.Count == 0) {//reached GOAL
+			AudioSource audio = GetComponent<AudioSource>();
+			audio.Play();
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
 			this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
 			this.lady.GetComponent<Animator> ().SetBool ("vampire", true);
