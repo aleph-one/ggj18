@@ -45,17 +45,21 @@ public class Toggle : MonoBehaviour {
 			}
 		} else {
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", true);
-			float speed = 2 * Time.deltaTime;
+			float speed = 3 * Time.deltaTime;
 			this.vampire.transform.position = Vector3.MoveTowards (this.vampire.transform.position, this.path [0], speed);
-			if (this.vampire.transform.position.Equals (this.path [0]) && this.path.Count > 1) {
-				this.path.RemoveAt (0);
+			if (this.vampire.transform.position.Equals (this.path [0])) {
+				if (this.path.Count > 1) {
+					int deltaY = this.path [0].y - this.path [1].y;
+					this.vampire.GetComponent<Animator> ().SetBool ("stairs", deltaY != 0);
+					this.path.RemoveAt (0);
+				} else {
+					this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
+				}
 			}
-			print (this.path);
 		}
 	}
 
-	bool checkToggles ()
-	{
+	bool checkToggles () {
 		bool updated = false;
 		for (int toggle = 0; toggle < numToggles; toggle++) {
 			bool b = Input.GetButtonDown ("Toggle" + toggle);
@@ -110,7 +114,6 @@ public class Toggle : MonoBehaviour {
 		if (!this.rooms[xRoom, yRoom]) {
 			return null;
 		}
-		bool valid = false;
 		Vector2Int[] n = getNeighbors (xRoom, yRoom);
 		for (int i = 0; i < n.GetLength(0); i++) {
 			if (n [i].x >= 0 && n [i].x < Toggle.xRooms && n[i].y >= 0 && n[i].y < Toggle.yRooms && !visited [n [i].x, n[i].y]) {
@@ -118,7 +121,6 @@ public class Toggle : MonoBehaviour {
 				np.Add (new Vector2Int(n[i].x, n[i].y));
 				List<Vector2Int> p2 = check (n [i].x, n [i].y, visited, np);
 				if (p2 != null) {
-					valid = true;
 					return p2;
 				}
 			}
