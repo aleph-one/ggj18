@@ -8,7 +8,7 @@ public class Toggle : MonoBehaviour {
 	private const int yRooms = 3;
 	private bool[,,] switches = new bool[numToggles, xRooms, yRooms];
 	private bool[,] rooms = new bool[xRooms, yRooms];
-	private List<Vector3> path;
+	private List<Vector2Int> path;
 	public GameObject[] roomSprites;
 	public Color roomDark;
 	public GameObject vampire;
@@ -41,24 +41,33 @@ public class Toggle : MonoBehaviour {
 		if (path == null) {
 			bool updated = checkToggles ();
 			if (updated) {
-				path = hasWon ();
+				path = check (0, 0, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
 			}
+		} else if (path.Count == 0) {
+			//reached GOAL
+			this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
+			this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
 		} else {
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", true);
 			float speed = 3 * Time.deltaTime;
-			this.vampire.transform.position = Vector3.MoveTowards (this.vampire.transform.position, this.path [0], speed);
-			if (this.vampire.transform.position.Equals (this.path [0])) {
+			Vector3 nextPos = getAnimationPos (this.path[0]);
+			this.vampire.transform.position = Vector3.MoveTowards (this.vampire.transform.position, nextPos, speed);
+			if (this.vampire.transform.position.Equals (nextPos)) {
 				if (this.path.Count > 1) {
 					int deltaY = this.path [0].y - this.path [1].y;
 					this.vampire.GetComponent<Animator> ().SetBool ("stairs", deltaY != 0);
-					this.path.RemoveAt (0);
 				} else {
 					this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
+				}
+				if (this.path.Count > 0) {
+					this.path.RemoveAt (0);
 				}
 			}
 		}
 	}
-
+	Vector3 getAnimationPos(Vector2Int p) {
+		return roomSprites [p.y * xRooms + p.x].transform.position;
+	}
 	bool checkToggles () {
 		bool updated = false;
 		for (int toggle = 0; toggle < numToggles; toggle++) {
@@ -88,21 +97,6 @@ public class Toggle : MonoBehaviour {
 		return updated;
 	}
 
-	List<Vector3> hasWon() {
-		List<Vector2Int> path = check (0, 0, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
-		if (path != null) {
-			string s = "";
-			List<Vector3> animPath = new List<Vector3> ();
-			foreach (Vector2Int p in path) {
-				s += (p.x + ":"+ p.y + "|");
-				animPath.Add (roomSprites [p.y * xRooms + p.x].transform.position);
-			}
-			print (s);
-			return animPath;
-		}
-		
-		return null;
-	}
 	Vector2Int[] getNeighbors(int x, int y) {
 		return new Vector2Int[] {new Vector2Int(x - 1, y), new Vector2Int(x, y - 1), new Vector2Int(x + 1, y), new Vector2Int(x, y + 1)};
 	}
