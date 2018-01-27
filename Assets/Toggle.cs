@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ExerWorld;
 
 public class Toggle : MonoBehaviour {
 	private const int numToggles = 12;
@@ -9,6 +10,7 @@ public class Toggle : MonoBehaviour {
 	private bool[,,] switches = new bool[numToggles, xRooms, yRooms];
 	private bool[,] rooms = new bool[xRooms, yRooms];
 	private List<Vector2Int> path;
+	private bool[] toggles = new bool[numToggles];
 	public GameObject[] roomSprites;
 	public Color roomDark;
 	public GameObject vampire;
@@ -38,6 +40,8 @@ public class Toggle : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		if (Time.realtimeSinceStartup < 2)
+			return;
 		if (path == null) {
 			bool updated = checkToggles ();
 			if (updated) {
@@ -72,6 +76,23 @@ public class Toggle : MonoBehaviour {
 		bool updated = false;
 		for (int toggle = 0; toggle < numToggles; toggle++) {
 			bool b = Input.GetButtonDown ("Toggle" + toggle);
+			int row = toggle / 4 + 1;
+			int col = toggle % 4 + 1;
+			string s = "window_row_" + row + "_col_" + col;
+			float f = ControlInput.GetCurrentValue (s);
+			//bool b = f > 0.5;
+			if (f == 0.0) {
+				this.toggles [toggle] = false;
+			} else if (f > 0.7) {
+				//b = true;
+				b = this.toggles [toggle] ^ true;
+				this.toggles [toggle] = true;
+			} else if (f < 0.3) {
+				//b = true;
+				b = this.toggles [toggle] ^ false;
+				this.toggles [toggle] = false;
+			}
+			//this.toggles [toggle] = b;
 			if (b) {
 				//print ("Toggle: " + toggle);
 				updated = true;
