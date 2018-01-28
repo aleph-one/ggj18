@@ -123,6 +123,7 @@ public class Toggle : MonoBehaviour {
 		this.path = null;
 		this.metTheCat = false;
 		this.scoreLabel.GetComponent<Text>().text = "Score " + this.score;
+		this.vampire.FindChildObjectByName ("Blood").SetActive (false);
 	}
 	private Vector2Int randomSwitch(int toggle) {
 		Vector2Int result = new Vector2Int ();
@@ -190,6 +191,7 @@ public class Toggle : MonoBehaviour {
 				} else {
 					this.round++;
 					this.score++;
+					this.vampire.FindChildObjectByName ("Blood").SetActive (true);
 				}
 				StartCoroutine (startGame());
 				this.gameOver = true;
