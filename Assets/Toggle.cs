@@ -17,13 +17,16 @@ public class Toggle : MonoBehaviour {
 	private bool gameOver = false;
 	private float startTime;
 	private bool metTheCat = false;
+	private int round = 0;
+	private Vector2Int[] requiredSwitches = new Vector2Int[] {new Vector2Int(3, 2), new Vector2Int(3, 1), new Vector2Int(0, 1)};
 
+	public GameObject[] victims;
 	public GameObject[] roomSprites;
 	public Sprite[] bright;
 	public Sprite[] dark;
 	public Color roomDark;
 	public GameObject vampire;
-	public GameObject lady;
+	public GameObject currentVictim;
 	public GameObject scoreLabel;
 	public int playTime = 20;
 	public bool isRandom = false;
@@ -36,7 +39,7 @@ public class Toggle : MonoBehaviour {
 	}
 
 	IEnumerator startGame() {
-		yield return new WaitForSeconds (1);
+		yield return new WaitForSeconds (2);
 		init ();
 		//SceneManager.LoadScene (0);
 	}
@@ -60,14 +63,9 @@ public class Toggle : MonoBehaviour {
 			roomSprite.GetComponent<SpriteRenderer> ().color = Color.white;
 		}
 
-		//GameObject go = this.lady;
-		//this.lady = this.vampire;
-		//this.vampire = go;
 		this.vampire.transform.position = getAnimationPos (new Vector2Int(0, 0));
-		this.lady.transform.position = getAnimationPos (new Vector2Int(3, 2));
 		this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
 		this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
-		this.lady.GetComponent<Animator> ().SetBool ("vampire", false);
 		if (isRandom) {
 			HashSet<Vector2Int> duplicates = new HashSet<Vector2Int> ();
 			int tries = 0;
@@ -82,12 +80,10 @@ public class Toggle : MonoBehaviour {
 						r2 = randomSwitch (i);
 					}
 					duplicates.Add (r2);
-					//randomSwitch (i);
-					//randomSwitch (i);
 				}
 				tries++;
 				//print("Duplicates: " + duplicates.Count);
-			} while(duplicates.Count > (numToggles * 2) / 2);
+			} while(duplicates.Count > (numToggles * 2) / 2 || ! duplicates.IsProperSupersetOf(this.requiredSwitches));
 			print ("Tries: " + tries);
 		} else {
 			switches [0, 1, 0] = true;
@@ -95,6 +91,7 @@ public class Toggle : MonoBehaviour {
 
 			switches [1, 3, 0] = true;
 			switches [1, 3, 1] = true;
+			switches [1, 3, 2] = true;
 		}
 		for (int toggle = 0; toggle < numToggles; toggle++) {
 			float f = getSpecialToggle (toggle);
@@ -106,10 +103,20 @@ public class Toggle : MonoBehaviour {
 				this.toggles [toggle] = false;
 			}
 		}
+		if (this.round > 0) {
+			this.victims [this.round - 1].SetActive (false);
+		}
+		if (this.round < this.victims.Length) {
+			this.currentVictim = victims [this.round];
+			//this.currentVictim.transform.position = getAnimationPos (new Vector2Int(3, 2));
+			this.currentVictim.GetComponent<Animator> ().SetBool ("vampire", false);
+			this.currentVictim.SetActive (true);
+			this.gameOver = false;
+		} else {
+			this.gameOver = true;
+		}
 		this.path = null;
 		this.metTheCat = false;
-		this.gameOver = false;
-		//this.score.SetActive (false);
 		this.scoreLabel.GetComponent<Text>().text = "Score " + this.score;
 	}
 	private Vector2Int randomSwitch(int toggle) {
@@ -125,11 +132,11 @@ public class Toggle : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (Time.realtimeSinceStartup - this.startTime > this.playTime) {//GAME OVER
+		if (this.round >= this.victims.Length) {//GAME OVER
 			string msg = "Final Score: " + this.score;
-			if (this.score < 1) {
+			if (this.score < 0) {
 				msg += "\nThats pretty BAD!";
-			} else if (this.score < 4) {
+			} else if (this.score < 3) {
 				msg += "\nThats quite OK!";
 			} else {
 				msg += "\nThats FANTASTIC!";
@@ -137,6 +144,7 @@ public class Toggle : MonoBehaviour {
 			this.scoreLabel.GetComponent<Text> ().text = msg;
 			this.scoreLabel.SetActive (true);
 			if (Input.anyKey) {
+				this.round = 0;
 				init ();
 				this.score = 0;
 				this.scoreLabel.GetComponent<Text>().text = "Score " + this.score;
@@ -156,15 +164,17 @@ public class Toggle : MonoBehaviour {
 			if (this.metTheCat) {
 				audio.Play ();
 			} else {
-				this.lady.GetComponent<Animator> ().SetBool ("vampire", true);
+				this.currentVictim.GetComponent<Animator> ().SetBool ("vampire", true);
 			}
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
 			this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
-			if (! this.gameOver) {
-				if (this.metTheCat)
+			if (!this.gameOver) {
+				if (this.metTheCat) {
 					this.score--;
-				else
+				} else {
+					this.round++;
 					this.score++;
+				}
 				StartCoroutine (startGame());
 				this.gameOver = true;
 			}
