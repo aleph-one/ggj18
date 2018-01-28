@@ -18,7 +18,7 @@ public class Toggle : MonoBehaviour {
 	private float startTime;
 	private bool metTheCat = false;
 	private int round = 0;
-	private Vector2Int[] requiredSwitches = new Vector2Int[] {new Vector2Int(3, 2)};
+	private Vector2Int[] requiredSwitches = new Vector2Int[] {new Vector2Int(3, 2), new Vector2Int(0,2), new Vector2Int(0,1), new Vector2Int(1,0) };
 
 	public GameObject[] victims;
 	public GameObject[] roomSprites;
@@ -34,6 +34,10 @@ public class Toggle : MonoBehaviour {
 	public Vector2Int start = new Vector2Int (0, 0);
 	public Vector2Int goal = new Vector2Int (3, 2);
 	public Vector2Int cat = new Vector2Int (0, 2);
+	public Vector3[] victPosition;
+	public Vector3 victimStart;
+
+	public AudioSource vampireAudio;
 	// Use this for initialization
 	void Start () {
 		init ();
@@ -42,6 +46,8 @@ public class Toggle : MonoBehaviour {
 	IEnumerator startGame() {
 		yield return new WaitForSeconds (3);
 
+
+		victims [0].SetActive (true);
 		init ();
 		//SceneManager.LoadScene (0);
 	}
@@ -109,7 +115,9 @@ public class Toggle : MonoBehaviour {
 			}
 		}
 		if (this.round > 0) {
-			this.victims [this.round - 1].SetActive (false);
+			//this.victims [this.round - 1].SetActive (false);
+			this.victims [this.round - 1].transform.position = victPosition[this.round - 1];
+
 		}
 		if (this.round < this.victims.Length) {
 			this.currentVictim = victims [this.round];
@@ -150,6 +158,11 @@ public class Toggle : MonoBehaviour {
 			this.scoreLabel.GetComponent<Text> ().text = msg;
 			this.scoreLabel.SetActive (true);
 			if (Input.anyKey) {
+				for (int i = 0; i <victims.Length; i++){
+					victims [i].transform.position = victimStart;
+					victims [i].SetActive (false);
+				}
+				victims [0].SetActive (true);
 				this.round = 0;
 				for (int i = 0; i < this.graves.Length; i++) {
 					this.graves [i].SetActive (false);
@@ -192,6 +205,7 @@ public class Toggle : MonoBehaviour {
 					this.round++;
 					this.score++;
 					this.vampire.FindChildObjectByName ("Blood").SetActive (true);
+					vampireAudio.Play ();
 				}
 				StartCoroutine (startGame());
 				this.gameOver = true;
@@ -201,6 +215,11 @@ public class Toggle : MonoBehaviour {
 			float speed = 6 * Time.deltaTime;
 			Vector3 nextPos = getAnimationPos (this.path[0]);
 			this.vampire.transform.position = Vector3.MoveTowards (this.vampire.transform.position, nextPos, speed);
+			if (nextPos.x < this.vampire.transform.position.x) {
+				this.vampire.GetComponent<SpriteRenderer> ().flipX = true;
+			} else {
+				this.vampire.GetComponent<SpriteRenderer> ().flipX = false;
+			}
 			if (this.vampire.transform.position.Equals (nextPos)) {
 				if (this.path.Count > 1) {
 					int deltaY = this.path [0].y - this.path [1].y;
