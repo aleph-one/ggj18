@@ -13,18 +13,23 @@ public class Toggle : MonoBehaviour {
 	private bool[,] rooms = new bool[xRooms, yRooms];
 	private List<Vector2Int> path;
 	private bool[] toggles = new bool[numToggles];
-	private int levelsCompleted = 0;
-	private bool levelFinished = false;
+	private int score = 0;
+	private bool gameOver = false;
 	private float startTime;
+	private bool metTheCat = false;
 
 	public GameObject[] roomSprites;
+	public Sprite[] bright;
+	public Sprite[] dark;
 	public Color roomDark;
 	public GameObject vampire;
 	public GameObject lady;
-	public GameObject score;
+	public GameObject scoreLabel;
 	public int playTime = 20;
 	public bool isRandom = false;
-
+	public Vector2Int start = new Vector2Int (0, 0);
+	public Vector2Int goal = new Vector2Int (3, 2);
+	public Vector2Int cat = new Vector2Int (0, 2);
 	// Use this for initialization
 	void Start () {
 		init ();
@@ -48,16 +53,16 @@ public class Toggle : MonoBehaviour {
 		this.switches = new bool[numToggles, xRooms, yRooms];
 		this.rooms = new bool[xRooms, yRooms];
 		this.rooms [0, 0] = true;
-		this.rooms [3, 2] = true;
+		//this.rooms [3, 2] = true;
 
 		this.toggles = new bool[numToggles];
 		foreach (GameObject roomSprite in roomSprites) {
 			roomSprite.GetComponent<SpriteRenderer> ().color = Color.white;
 		}
 
-		GameObject go = this.lady;
-		this.lady = this.vampire;
-		this.vampire = go;
+		//GameObject go = this.lady;
+		//this.lady = this.vampire;
+		//this.vampire = go;
 		this.vampire.transform.position = getAnimationPos (new Vector2Int(0, 0));
 		this.lady.transform.position = getAnimationPos (new Vector2Int(3, 2));
 		this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
@@ -82,7 +87,7 @@ public class Toggle : MonoBehaviour {
 				}
 				tries++;
 				//print("Duplicates: " + duplicates.Count);
-			} while(duplicates.Count > (numToggles * 2) / 4);
+			} while(duplicates.Count > (numToggles * 2) / 2);
 			print ("Tries: " + tries);
 		} else {
 			switches [0, 1, 0] = true;
@@ -102,15 +107,16 @@ public class Toggle : MonoBehaviour {
 			}
 		}
 		this.path = null;
-		this.levelFinished = false;
+		this.metTheCat = false;
+		this.gameOver = false;
 		//this.score.SetActive (false);
-		this.score.GetComponent<Text>().text = "Level " + (this.levelsCompleted + 1);
+		this.scoreLabel.GetComponent<Text>().text = "Score " + this.score;
 	}
 	private Vector2Int randomSwitch(int toggle) {
 		Vector2Int result = new Vector2Int ();
 		result.x = Random.Range (0, xRooms);
 		result.y = Random.Range (0, yRooms);
-		if ((result.x == 0 && result.y == 0) || (result.x == 3 && result.y == 2))
+		if ((result.Equals(this.start)))// || (result.x == 3 && result.y == 2))
 			return randomSwitch (toggle);
 		else
 			switches [toggle, result.x, result.y] = true;
@@ -120,37 +126,47 @@ public class Toggle : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Time.realtimeSinceStartup - this.startTime > this.playTime) {//GAME OVER
-			string msg = this.levelsCompleted + " levels finished in " + this.playTime + " seconds";
-			if (this.levelsCompleted < 3) {
+			string msg = "Final Score: " + this.score;
+			if (this.score < 1) {
 				msg += "\nThats pretty BAD!";
-			} else if (this.levelsCompleted < 6) {
+			} else if (this.score < 4) {
 				msg += "\nThats quite OK!";
 			} else {
 				msg += "\nThats FANTASTIC!";
 			}
-			this.score.GetComponent<Text> ().text = msg;
-			this.score.SetActive (true);
+			this.scoreLabel.GetComponent<Text> ().text = msg;
+			this.scoreLabel.SetActive (true);
 			if (Input.anyKey) {
 				init ();
-				this.levelsCompleted = 0;
-				this.score.GetComponent<Text>().text = "Level " + (this.levelsCompleted + 1);
+				this.score = 0;
+				this.scoreLabel.GetComponent<Text>().text = "Score " + this.score;
 				this.startTime = Time.realtimeSinceStartup;
 			}
 		} else if (path == null) {// no path found yet
 			bool updated = checkToggles ();
 			if (updated) {
-				path = checkPath (0, 0, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
+				this.path = checkPath (start, goal, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
+				if (this.path == null) {
+					this.path = checkPath (start, cat, new bool[Toggle.xRooms, Toggle.yRooms], new List<Vector2Int>());
+					if (this.path != null) this.metTheCat = true;
+				}
 			}
 		} else if (path.Count == 0) {//reached GOAL
 			AudioSource audio = GetComponent<AudioSource>();
-			audio.Play();
+			if (this.metTheCat) {
+				audio.Play ();
+			} else {
+				this.lady.GetComponent<Animator> ().SetBool ("vampire", true);
+			}
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", false);
 			this.vampire.GetComponent<Animator> ().SetBool ("stairs", false);
-			this.lady.GetComponent<Animator> ().SetBool ("vampire", true);
-			if (! this.levelFinished) {
-				this.levelsCompleted++;
+			if (! this.gameOver) {
+				if (this.metTheCat)
+					this.score--;
+				else
+					this.score++;
 				StartCoroutine (startGame());
-				this.levelFinished = true;
+				this.gameOver = true;
 			}
 		} else {//walking towards goal
 			this.vampire.GetComponent<Animator> ().SetBool ("walk", true);
@@ -203,11 +219,13 @@ public class Toggle : MonoBehaviour {
 		// update room sprites
 		for (int xRoom = 0; xRoom < Toggle.xRooms; xRoom++) {
 			for (int yRoom = 0; yRoom < Toggle.yRooms; yRoom++) {
+				int i = yRoom * Toggle.xRooms + xRoom;
 				if (rooms [xRoom, yRoom]) {
-					roomSprites [yRoom * Toggle.xRooms + xRoom].GetComponent<SpriteRenderer> ().color = this.roomDark;
-				}
-				else {
-					roomSprites [yRoom * Toggle.xRooms + xRoom].GetComponent<SpriteRenderer> ().color = Color.white;
+					roomSprites [i].GetComponent<SpriteRenderer> ().color = this.roomDark;
+					roomSprites [i].GetComponent<SpriteRenderer> ().sprite = this.dark[i];
+				} else {
+					roomSprites [i].GetComponent<SpriteRenderer> ().color = Color.white;
+					roomSprites [i].GetComponent<SpriteRenderer> ().sprite = this.bright[i];
 				}
 			}
 		}
@@ -217,20 +235,21 @@ public class Toggle : MonoBehaviour {
 	Vector2Int[] getNeighbors(int x, int y) {
 		return new Vector2Int[] {new Vector2Int(x + 1, y), new Vector2Int(x, y + 1), new Vector2Int(x - 1, y), new Vector2Int(x, y - 1)};
 	}
-	List<Vector2Int> checkPath(int xRoom, int yRoom, bool[,] visited, List<Vector2Int> path) {
-		visited [xRoom, yRoom] = true;
-		if (xRoom == 3 && yRoom == 2) {//GOAL
-			return path;
-		}
-		if (!this.rooms[xRoom, yRoom]) {
+	List<Vector2Int> checkPath(Vector2Int start, Vector2Int goal, bool[,] visited, List<Vector2Int> path) {
+		visited [start.x, start.y] = true;
+		if (!this.rooms[start.x, start.y]) {
 			return null;
 		}
-		Vector2Int[] n = getNeighbors (xRoom, yRoom);
+		if (start.Equals(goal)) {//GOAL
+			return path;
+		}
+		Vector2Int[] n = getNeighbors (start.x, start.y);
 		for (int i = 0; i < n.GetLength(0); i++) {
 			if (n [i].x >= 0 && n [i].x < Toggle.xRooms && n[i].y >= 0 && n[i].y < Toggle.yRooms && !visited [n [i].x, n[i].y]) {
 				List<Vector2Int> np = new List<Vector2Int> (path.ToArray());
-				np.Add (new Vector2Int(n[i].x, n[i].y));
-				List<Vector2Int> p2 = checkPath (n [i].x, n [i].y, visited, np);
+				Vector2Int pos = new Vector2Int (n [i].x, n [i].y);
+				np.Add (pos);
+				List<Vector2Int> p2 = checkPath (pos, goal, visited, np);
 				if (p2 != null) {
 					return p2;
 				}
