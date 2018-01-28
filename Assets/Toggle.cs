@@ -18,7 +18,7 @@ public class Toggle : MonoBehaviour {
 	private float startTime;
 	private bool metTheCat = false;
 	private int round = 0;
-	private Vector2Int[] requiredSwitches = new Vector2Int[] {new Vector2Int(3, 2), new Vector2Int(3, 1), new Vector2Int(0, 1)};
+	private Vector2Int[] requiredSwitches = new Vector2Int[] {new Vector2Int(3, 2)};
 
 	public GameObject[] victims;
 	public GameObject[] roomSprites;
@@ -39,7 +39,7 @@ public class Toggle : MonoBehaviour {
 	}
 
 	IEnumerator startGame() {
-		yield return new WaitForSeconds (2);
+		yield return new WaitForSeconds (3);
 		init ();
 		//SceneManager.LoadScene (0);
 	}
@@ -88,10 +88,13 @@ public class Toggle : MonoBehaviour {
 		} else {
 			switches [0, 1, 0] = true;
 			switches [0, 2, 0] = true;
+			switches [0, 3, 0] = true;
+			switches [0, 3, 1] = true;
+			switches [0, 3, 2] = true;
 
-			switches [1, 3, 0] = true;
-			switches [1, 3, 1] = true;
-			switches [1, 3, 2] = true;
+			switches [1, 0, 1] = true;
+			switches [1, 0, 2] = true;
+
 		}
 		for (int toggle = 0; toggle < numToggles; toggle++) {
 			float f = getSpecialToggle (toggle);
