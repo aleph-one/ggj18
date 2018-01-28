@@ -28,6 +28,7 @@ public class Toggle : MonoBehaviour {
 	public GameObject vampire;
 	public GameObject currentVictim;
 	public GameObject scoreLabel;
+	public GameObject[] graves;
 	public int playTime = 20;
 	public bool isRandom = false;
 	public Vector2Int start = new Vector2Int (0, 0);
@@ -40,6 +41,7 @@ public class Toggle : MonoBehaviour {
 
 	IEnumerator startGame() {
 		yield return new WaitForSeconds (3);
+
 		init ();
 		//SceneManager.LoadScene (0);
 	}
@@ -148,6 +150,10 @@ public class Toggle : MonoBehaviour {
 			this.scoreLabel.SetActive (true);
 			if (Input.anyKey) {
 				this.round = 0;
+				for (int i = 0; i < this.graves.Length; i++) {
+					this.graves [i].SetActive (false);
+				}
+
 				init ();
 				this.score = 0;
 				this.scoreLabel.GetComponent<Text>().text = "Score " + this.score;
@@ -165,7 +171,7 @@ public class Toggle : MonoBehaviour {
 		} else if (path.Count == 0) {//reached GOAL
 			AudioSource audio = GetComponent<AudioSource>();
 			if (this.metTheCat) {
-				audio.Play ();
+				//audio.Play ();
 			} else {
 				this.currentVictim.GetComponent<Animator> ().SetBool ("vampire", true);
 			}
@@ -174,6 +180,13 @@ public class Toggle : MonoBehaviour {
 			if (!this.gameOver) {
 				if (this.metTheCat) {
 					this.score--;
+					audio.Play ();
+					for (int i = 0; i < this.graves.Length; i++) {
+						if (! this.graves[i].activeSelf) {
+							this.graves [i].SetActive (true);
+							break;
+						}
+					}
 				} else {
 					this.round++;
 					this.score++;
